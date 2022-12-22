@@ -16,6 +16,10 @@ import gen_evt as ge
 from pyutils.kbd import read_key
 
 
+__version_info__ = (0, 0)
+__version__ = ".".join(str(e) for e in __version_info__)
+
+
 def parse_args(*argv):
     parser = argparse.ArgumentParser(description="Suppress screen saver / turn off")
     parser.add_argument("--interval", "-i", type=int, default=200,
