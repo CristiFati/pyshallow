@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 
 # Win idle bypass script by (pussious) cfati
 

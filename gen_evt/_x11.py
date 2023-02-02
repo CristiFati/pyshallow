@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 
 # Nix (X11) idle bypass script by (pussious) cfati
 

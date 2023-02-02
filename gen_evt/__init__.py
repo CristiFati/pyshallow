@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 
 # Idle bypass script by (pussious) cfati
 

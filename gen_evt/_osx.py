@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 
 # OSX idle bypass script by (pussious) cfati
 
