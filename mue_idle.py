@@ -8,7 +8,7 @@ import sys
 import time
 
 """
-cur_dir = os.path.abspath(os.path.dirname(__file__))
+cur_dir = os.path.dirname(os.path.abspath(__file__))
 if cur_dir not in sys.path:
     sys.path.append(cur_dir)
 """
