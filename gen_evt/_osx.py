@@ -88,7 +88,7 @@ __warn = True
 def simulate(verbose=False):
     global __warn
     if __warn:
-        print("----- If it doesn't work, this application (and also 'Terminal') "
+        print("----- If it doesn't work, this \"application\" (and also 'Terminal') "
               "must be added to the 'Accessibility' permission list -----")
         __warn = False
     #evt = CGEventCreateMouseEvent(None, mouseMoved, CGPoint(-1, -1), -1)
