@@ -125,8 +125,7 @@ if pre_test:
     _open_display(quit_on_error=True, verbose=True)
 
 
-def simulate(**kwargs):
-    verbose = bool(kwargs.get("verbose"))
+def simulate(verbose=False):
     display_ptr = _open_display(verbose=verbose)
     if not display_ptr:
         return

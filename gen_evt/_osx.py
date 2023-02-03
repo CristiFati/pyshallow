@@ -85,13 +85,12 @@ CGMainDisplayID.restype = CGDirectDisplayID
 __warn = True
 
 
-def simulate(**kwargs):
+def simulate(verbose=False):
     global __warn
     if __warn:
         print("----- If it doesn't work, this application (and also 'Terminal') "
               "must be added to the 'Accessibility' permission list -----")
         __warn = False
-    verbose = bool(kwargs.get("verbose"))
     #evt = CGEventCreateMouseEvent(None, mouseMoved, CGPoint(-1, -1), -1)
     evt = CGEventCreate(None)
     if not evt:

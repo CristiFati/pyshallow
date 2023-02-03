@@ -54,8 +54,7 @@ SendInput.argtypes = (wts.UINT, cts.POINTER(INPUT), cts.c_int)
 SendInput.restype = wts.UINT
 
 
-def simulate(**kwargs):
-    verbose = bool(kwargs.get("verbose"))
+def simulate(verbose=False):
     point = wts.POINT()
     res = GetCursorPos(cts.byref(point))
     if verbose:
