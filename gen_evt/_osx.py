@@ -88,7 +88,8 @@ __warn = True
 def simulate(**kwargs):
     global __warn
     if __warn:
-        print("----- If it doesn't work, this application (and also 'Terminal') must be added to the 'Accessibility' permission list -----")
+        print("----- If it doesn't work, this application (and also 'Terminal') "
+              "must be added to the 'Accessibility' permission list -----")
         __warn = False
     verbose = bool(kwargs.get("verbose"))
     #evt = CGEventCreateMouseEvent(None, mouseMoved, CGPoint(-1, -1), -1)

@@ -146,7 +146,8 @@ def simulate(**kwargs):
     #print(evt.xmotion.root, evt.xmotion.subwindow)
     '''
 
-    res = XQueryPointer(display_ptr, root_window, cts.byref(root_wnd), cts.byref(child_wnd), cts.byref(root_x), cts.byref(root_y), cts.byref(child_x), cts.byref(child_y), cts.byref(mask))
+    res = XQueryPointer(display_ptr, root_window, cts.byref(root_wnd), cts.byref(child_wnd), cts.byref(root_x),
+                        cts.byref(root_y), cts.byref(child_x), cts.byref(child_y), cts.byref(mask))
     if verbose:
         if res:
             print("Mouse at ({:d}, {:d}).".format(root_x.value, root_y.value))
