@@ -5,7 +5,6 @@
 import argparse
 import os
 import sys
-import time
 
 """
 cur_dir = os.path.dirname(os.path.abspath(__file__))
@@ -13,6 +12,7 @@ if cur_dir not in sys.path:
     sys.path.append(cur_dir)
 """
 import gen_evt as ge
+from cfpyutils.common import ts_str
 from cfpyutils.keyboard import read_key
 
 
@@ -43,7 +43,7 @@ def main(*argv):
 
     while True:
         if verbose:
-            print(verbose_text_pat.format(time.strftime("%Y%m%d%H%M%S", time.gmtime())[2:], run_interval))
+            print(verbose_text_pat.format(ts_str()[2:], run_interval))
         res = ge.simulate(verbose=verbose)
         if read_key(interval=run_interval, poll_interval=key_interval):
             if verbose:
