@@ -13,7 +13,7 @@ if cur_dir not in sys.path:
     sys.path.append(cur_dir)
 """
 import gen_evt as ge
-from pyutils.kbd import read_key
+from cfpyutils.keyboard import read_key
 
 
 __version_info__ = (0, 1)

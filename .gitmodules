@@ -1,4 +1,4 @@
-[submodule "pyutils"]
-	path = pyutils
-	url = git@github.com:CristiFati/pyutils.git
+[submodule "cfpyutils"]
+	path = cfpyutils
+	url = git@github.com:CristiFati/cfpyutils.git
 	branch = master
