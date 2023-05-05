@@ -1,0 +1,20 @@
+# Desktop file: https://specifications.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html
+# @TODO - cfati:
+#   - REPLACE ${_PATH_PYSHALLOW} (dummy variable) (from Exec and Icon entries) by the actual path (on target machine)
+#     - Only tested with XTerm and Gnome-Terminal (sample paths from my machine(s) included)
+#   - SymLink file in ~/.local/share/applications
+
+[Desktop Entry]
+Type=Application
+Name=Mue Idle
+GenericName=Hecar Tool
+Comment=Stay Awake!
+#Exec=gnome-terminal --tab -- bash "${PYSHALLOW_PATH}/nix_run.sh" -v
+Exec=xterm -e sh "${_PATH_PYSHALLOW}/nix_run.sh" -v
+#Exec=xterm -e sh "/mnt/e/Work/Dev/GitHub/CristiFati/pyshallow/src/nix_run.sh" -v
+Icon=${_PATH_PYSHALLOW}/_extra/mi.png
+#Icon=/mnt/e/Work/Dev/GitHub/CristiFati/pyshallow/src/_extra/mi.png
+Terminal=false
+MimeType=text/plain;
+Categories=Utility;Application;
+
