@@ -9,6 +9,8 @@ if plat[:3] == "win":
 else:
     if plat == "darwin":
         from ._osx import simulate
+    elif hasattr(sys, "getandroidapilevel"):
+        from ._android import simulate
     #elif :  # More conditions could come here
     else:
         from ._x11 import simulate
