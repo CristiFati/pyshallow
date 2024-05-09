@@ -1,5 +1,5 @@
-[submodule "cfpyutils"]
-	path = cfpyutils
-	url = git@github.com:CristiFati/cfpyutils.git
-	#url = https://github.com/CristiFati/cfpyutils.git
-	branch = master
+[submodule "pycfutils"]
+	path = pycfutils
+	url = git@github.com:CristiFati/pycfutils.git
+	#url = https://github.com/CristiFati/pycfutils.git
+	branch = main
