@@ -3,7 +3,6 @@
 # Idle bypass script by (pussious) cfati
 
 import argparse
-import os
 import sys
 
 """
@@ -12,11 +11,11 @@ if cur_dir not in sys.path:
     sys.path.append(cur_dir)
 """
 import gen_evt as ge
-from pycfutils.common import ts_str
+from pycfutils.miscellaneous import timestamp_string
 from pycfutils.keyboard import read_key
 
 
-__version_info__ = (0, 2, 2)
+__version_info__ = (0, 0, 0)
 __version__ = ".".join(str(e) for e in __version_info__)
 
 
@@ -43,7 +42,7 @@ def main(*argv):
 
     while True:
         if verbose:
-            print(verbose_text_pat.format(ts_str()[2:], run_interval))
+            print(verbose_text_pat.format(timestamp_string()[2:], run_interval))
         res = ge.simulate(verbose=verbose)
         if read_key(interval=run_interval, poll_interval=key_interval):
             if verbose:
