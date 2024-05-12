@@ -3,16 +3,23 @@
 # Idle bypass script by (pussious) cfati
 
 import argparse
+import os
 import sys
 
-"""
-cur_dir = os.path.dirname(os.path.abspath(__file__))
-if cur_dir not in sys.path:
-    sys.path.append(cur_dir)
-"""
-import gen_evt as ge
-from pycfutils.miscellaneous import timestamp_string
+try:
+    from pycfutils.miscellaneous import timestamp_string
+except ImportError:
+    _pcfu = os.path.join(os.path.dirname(os.path.abspath(__file__)), "pycfutils")
+    if _pcfu not in sys.path:
+        sys.path.insert(0, _pcfu)
+    del _pcfu
+    #print(sys.path)
+    #import pycfutils as p
+    #print(p)
+    from pycfutils.miscellaneous import timestamp_string
 from pycfutils.keyboard import read_key
+
+import gen_evt as ge
 
 
 __version_info__ = (0, 0, 0)
