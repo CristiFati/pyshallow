@@ -1,4 +1,3 @@
-
 # Idle bypass script by (pussious) cfati
 
 import sys
@@ -11,17 +10,14 @@ else:
         from ._osx import simulate
     elif hasattr(sys, "getandroidapilevel"):
         from ._android import simulate
-    #elif :  # More conditions could come here
+    # elif :  # More conditions could come here
     else:
         from ._x11 import simulate
 
 
-__all__ = (
-    "simulate",
-)
+__all__ = ("simulate",)
 
 
 if __name__ == "__main__":
     print("This module is not meant to be run directly.\n")
     sys.exit(-1)
-

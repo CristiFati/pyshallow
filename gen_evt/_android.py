@@ -1,7 +1,5 @@
-
 # Android idle bypass script by (pussious) cfati
 
-import ctypes as cts
 import sys
 
 
@@ -23,4 +21,3 @@ def simulate(verbose=False):
 if __name__ == "__main__":
     print("This script is not meant to be run directly.\n")
     sys.exit(-1)
-

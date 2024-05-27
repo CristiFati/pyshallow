@@ -1,10 +1,8 @@
-
 # Win idle bypass script by (pussious) cfati
 
 import ctypes as cts
 import sys
 from ctypes import wintypes as wts
-
 
 MOUSEEVENTF_MOVE = 0x0001
 INPUT_MOUSE = 0x0000
@@ -79,4 +77,3 @@ def simulate(verbose=False):
 if __name__ == "__main__":
     print("This script is not meant to be run directly.\n")
     sys.exit(-1)
-
