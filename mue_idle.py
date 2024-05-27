@@ -3,21 +3,18 @@
 # Idle bypass script by (pussious) cfati
 
 import argparse
-import os
 import random
 import sys
 
 try:
+    from pycfutils.io import read_key
     from pycfutils.miscellaneous import timestamp_string
 except ImportError:
-    _pcfu = os.path.join(os.path.dirname(os.path.abspath(__file__)), "pycfutils")
-    if _pcfu not in sys.path:
-        sys.path.insert(0, _pcfu)
-    del _pcfu
-    from pycfutils.miscellaneous import timestamp_string
+    # @TODO - cfati: Dev repository
+    from pycfutils.pycfutils.io import read_key
+    from pycfutils.pycfutils.miscellaneous import timestamp_string
 
 import gen_evt as ge
-from pycfutils.io import read_key
 
 __version_info__ = (0, 0, 0)
 __version__ = ".".join(str(e) for e in __version_info__)
