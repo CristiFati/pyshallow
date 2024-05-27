@@ -13,11 +13,8 @@ except ImportError:
     if _pcfu not in sys.path:
         sys.path.insert(0, _pcfu)
     del _pcfu
-    #print(sys.path)
-    #import pycfutils as p
-    #print(p)
     from pycfutils.miscellaneous import timestamp_string
-from pycfutils.keyboard import read_key
+from pycfutils.io import read_key
 
 import gen_evt as ge
 
@@ -51,7 +48,7 @@ def main(*argv):
         if verbose:
             print(verbose_text_pat.format(timestamp_string()[2:], run_interval))
         res = ge.simulate(verbose=verbose)
-        if read_key(interval=run_interval, poll_interval=key_interval):
+        if read_key(timeout=run_interval, poll_interval=key_interval):
             if verbose:
                 print("\nKey pressed. Exiting.")
             break
