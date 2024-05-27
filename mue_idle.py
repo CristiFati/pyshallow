@@ -41,11 +41,11 @@ def parse_args(*argv):
         "-p",
         default=10,
         type=int,
-        help="max base interval deviation percent."
+        help="maximum base interval deviation percent."
         " A constant interval might be an indicator for monitoring tools that something fishy is going on."
-        " Adding some randomization so each interval is different."
-        " Make sure that if an event is required to happen at a certain rate,"
-        " base interval + max deviation fit into that",
+        " Adding some randomization, so each interval is different."
+        " Make sure that if an event is required to happen in a certain amount of time,"
+        " base interval + maximum deviation fit into that",
     )
     parser.add_argument("--verbose", "-v", action="store_true", help="verbose mode")
 
@@ -72,13 +72,17 @@ def main(*argv):
 
     verbose_text_pat = (
         "\n{:s}\nAttempting to (fakely) move the mouse in {:d} seconds.\n"
-        "  At any point, press a key to interrupt..."
+        "  At any point, press any key to interrupt..."
     )
 
     while True:
         interval = generate_interval(args.base_interval, args.max_deviation_percent)
         if args.verbose:
-            print(verbose_text_pat.format(timestamp_string()[2:], interval))
+            print(
+                verbose_text_pat.format(
+                    timestamp_string(human_readable=False)[2:], interval
+                )
+            )
         res = ge.simulate(verbose=args.verbose)
         if read_key(timeout=interval, poll_interval=args.key_interval):
             if args.verbose:

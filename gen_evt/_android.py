@@ -1,4 +1,4 @@
-# Android idle bypass script by (pussious) cfati
+# !!! WiP !!! Android idle bypass script by (pussious) cfati
 
 import sys
 

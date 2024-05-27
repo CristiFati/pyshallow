@@ -1,11 +1,11 @@
 _SCRIPT="mue_idle.py"
 _CWD="$(dirname "${0}")"
-if [ ! "_CWD" = "" ]; then
+if [ -n "${_CWD}" ]; then
     _SCRIPT="${_CWD}/${_SCRIPT}"
 fi
 
-if [ "${PYTHONEXE}" = "" ]; then
-    PYTHONEXE="python3"
+if [ -z "${PYTHONEXE}" ]; then
+    PYTHONEXE="python"
 fi
 
 "${PYTHONEXE}" "${_SCRIPT}" "${@}"

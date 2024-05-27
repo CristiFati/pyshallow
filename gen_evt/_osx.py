@@ -86,8 +86,8 @@ def simulate(verbose=False):
     global __warn
     if __warn:
         print(
-            '----- If it doesn\'t work, this "application"'
-            " (and also the one(s) launching it)"
+            "----- If it doesn't work, this \"application\""
+            " (and also the one(s) launching it (Terminal))"
             " must be added to the 'Accessibility' permission list -----"
         )
         __warn = False
