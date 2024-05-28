@@ -16,7 +16,7 @@ except ImportError:
 
 import gen_evt as ge
 
-__version_info__ = (0, 0, 0)
+__version_info__ = (2024, 5, 28)
 __version__ = ".".join(str(e) for e in __version_info__)
 
 
