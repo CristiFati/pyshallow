@@ -5,13 +5,6 @@ import os
 import sys
 from ctypes.util import find_library
 
-"""
-PointerWindow = 0
-
-PointerMotionMask = 1 << 6
-MotionNotify = 6
-"""
-
 IntPtr = cts.POINTER(cts.c_int)
 UIntPtr = cts.POINTER(cts.c_uint)
 DisplayPtr = cts.c_void_p
@@ -19,40 +12,6 @@ Bool = cts.c_int
 XID = cts.c_ulong
 Window = XID
 WindowPtr = cts.POINTER(Window)
-
-"""
-CARD32 = XID
-Time = CARD32
-Status = cts.c_int
-
-
-class XMotionEvent(cts.Structure):
-    _fields_ = [
-        ("type", cts.c_int),
-        ("serial", cts.c_ulong),
-        ("send_event", Bool),
-        ("display", DisplayPtr),
-        ("window", Window),
-        ("root", Window),
-        ("subwindow", Window),
-        ("time", Time),
-        ("x", cts.c_int),
-        ("y", cts.c_int),
-        ("x_root", cts.c_int),
-        ("y_root", cts.c_int),
-        ("state", cts.c_uint),
-        ("is_hint", cts.c_char),
-        ("same_screen", Bool),
-    ]
-
-
-class XEvent(cts.Union):
-    _fields_ = [
-        ("type", cts.c_int),
-        ("xmotion", XMotionEvent),  # Many other fields exist
-        ("pad", cts.c_long * 24),
-    ]
-"""
 
 lib_path = find_library("X11")
 if not lib_path:
@@ -78,12 +37,6 @@ XWarpPointer.argtypes = (
 )
 XWarpPointer.restype = Bool
 
-"""
-XDefaultScreen = X11.XDefaultScreen
-XDefaultScreen.argtypes = (DisplayPtr,)
-XDefaultScreen.restype = cts.c_int
-"""
-
 XDefaultRootWindow = X11.XDefaultRootWindow
 XDefaultRootWindow.argtypes = (DisplayPtr,)
 XDefaultRootWindow.restype = Window
@@ -101,12 +54,6 @@ XQueryPointer.argtypes = (
     UIntPtr,
 )
 XQueryPointer.restype = Bool
-
-"""
-XSendEvent = X11.XSendEvent
-XSendEvent.argtypes = (DisplayPtr, Window, Bool, cts.c_long, cts.POINTER(XEvent))
-XSendEvent.restype = Status
-"""
 
 XFlush = X11.XFlush
 XFlush.argtypes = (DisplayPtr,)
@@ -154,15 +101,6 @@ def simulate(verbose=False):
     child_x, child_y = cts.c_int(0), cts.c_int(0)
     mask = cts.c_uint(0)
 
-    """
-    evt = XEvent()
-    evt.type = MotionNotify
-    evt.xmotion.send_event = 0
-    evt.xmotion.same_screen = 1
-
-    #print(evt.xmotion.root, evt.xmotion.subwindow)
-    """
-
     res = XQueryPointer(
         display_ptr,
         root_window,
@@ -179,19 +117,6 @@ def simulate(verbose=False):
             print("Mouse at ({:d}, {:d}).".format(root_x.value, root_y.value))
         else:
             print("Error getting cursor position.")
-
-    """
-    print(res, mask)
-    evt.xmotion.root = root_wnd
-    evt.xmotion.subwindow = child_wnd
-    evt.xmotion.x = child_x
-    evt.xmotion.y = child_y
-    evt.xmotion.root_x = root_x
-    evt.xmotion.root_y = root_y
-    evt.xmotion.state = 0 #mask
-
-    res = XSendEvent(display_ptr, PointerWindow, 0, PointerMotionMask, cts.byref(evt))
-    """
 
     res = XWarpPointer(display_ptr, 0, 0, 0, 0, 0, 0, 0, 0)
     if verbose:

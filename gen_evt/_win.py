@@ -22,8 +22,8 @@ class MOUSEINPUT(cts.Structure):
 class _INPUT(cts.Union):
     _fields_ = (
         ("mi", MOUSEINPUT),
-        ("ki", cts.c_ubyte),  # Dummy field - don't give a fck
-        ("hi", cts.c_ubyte),  # Dummy field - don't give a fck
+        ("ki", cts.c_ubyte),  # Dummy field - don't give a phuck
+        ("hi", cts.c_ubyte),  # Dummy field - don't give a phuck
     )
 
 

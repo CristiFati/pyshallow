@@ -9,18 +9,12 @@ if sys.maxsize > 0x100000000:
 else:
     CGFloat = cts.c_float
 
-# Int32 = cts.c_int32
 UInt32 = cts.c_uint32
-# CGError = Int32
-# CGDirectDisplayID = UInt32
 CGEventRef = cts.c_void_p
-# CGEventType = UInt32
-# CGMouseButton = UInt32
 CGEventSourceRef = cts.c_void_p
 CGEventTapLocation = UInt32
 
 
-# success = 0
 cgSessionEventTap = 1
 mouseMoved = 5
 
@@ -38,12 +32,6 @@ if not lib_path:
     sys.exit(-1)
 CoreGraphics = cts.CDLL(lib_path)
 
-"""
-CGEventCreateMouseEvent = CoreGraphics.CGEventCreateMouseEvent
-CGEventCreateMouseEvent.argtypes = (CGEventSourceRef, CGEventType, CGPoint, CGMouseButton)
-CGEventCreateMouseEvent.restype = CGEventRef
-"""
-
 CGEventCreate = CoreGraphics.CGEventCreate
 CGEventCreate.argtypes = (CGEventSourceRef,)
 CGEventCreate.restype = CGEventRef
@@ -60,25 +48,6 @@ CGEventPost = CoreGraphics.CGEventPost
 CGEventPost.argtypes = (CGEventTapLocation, CGEventSourceRef)
 CGEventPost.restype = None
 
-"""
-CGEventSetLocation = CoreGraphics.CGEventSetLocation
-CGEventSetLocation.argtypes = (CGEventRef, CGPoint)
-CGEventSetLocation.restype = None
-
-CGWarpMouseCursorPosition = CoreGraphics.CGWarpMouseCursorPosition
-CGWarpMouseCursorPosition.argtypes = (CGPoint,)
-CGWarpMouseCursorPosition.restype = CGError
-
-CGDisplayMoveCursorToPoint = CoreGraphics.CGDisplayMoveCursorToPoint
-CGDisplayMoveCursorToPoint.argtypes = (CGDirectDisplayID, CGPoint)
-CGDisplayMoveCursorToPoint.restype = CGError
-
-CGMainDisplayID = CoreGraphics.CGMainDisplayID
-CGMainDisplayID.argtypes = ()
-CGMainDisplayID.restype = CGDirectDisplayID
-"""
-
-
 __warn = True
 
 
@@ -86,7 +55,7 @@ def simulate(verbose=False):
     global __warn
     if __warn:
         print(
-            "----- If it doesn't work, this \"application\""
+            '----- If it doesn\'t work, this "application"'
             " (and also the one(s) launching it (Terminal))"
             " must be added to the 'Accessibility' permission list -----"
         )
