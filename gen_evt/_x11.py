@@ -2,8 +2,16 @@
 
 import ctypes as cts
 import os
+import socket
 import sys
 from ctypes.util import find_library
+
+try:
+    import pycfutils.network as pcun
+except ImportError:
+    # @TODO - cfati: Dev repository
+    import pycfutils.pycfutils.network as pcun
+
 
 IntPtr = cts.POINTER(cts.c_int)
 UIntPtr = cts.POINTER(cts.c_uint)
@@ -63,38 +71,55 @@ XCloseDisplay = X11.XCloseDisplay
 XCloseDisplay.argtypes = (DisplayPtr,)
 XCloseDisplay.restype = None
 
+_x_quick_check = True
 
-__warn = bool(os.environ.get("DISPLAY", "").split(":")[0])
+
+def _is_x_server_listening():
+    fails = (ConnectionRefusedError, socket.timeout)
+    hds = os.environ.get("DISPLAY", "").split(":")
+    host = "localhost"
+    port = 6000
+    if hds[0]:
+        host = hds[0]
+    if len(hds) == 2:
+        d = hds[1].split(".")
+        if d[0].isnumeric():
+            port += int(d[0])
+    try:
+        pcun.connect_to_server(host, port, pcun.SOCKET_FAMILY_IPV4, attempt_timeout=0.5)
+    except Exception as e:
+        if isinstance(getattr(e, "__cause__"), fails):
+            return False
+    return True
 
 
 def _open_display(name=None, quit_on_error=False, verbose=False):
-    # @TODO - cfati: Attempt a (timed) socket connection to the X Server?
-    global __warn
-    if __warn:
-        print(
-            "----- X Server custom config. There's a chance it might be unresponsive -----"
-        )
-        __warn = False
+    global _x_quick_check
+    if _x_quick_check:
+        if not _is_x_server_listening():
+            if (
+                input(
+                    "A quick test shows that no XServer is listening."
+                    " Press Y/y to continue anyway (in a possibly unresponsive manner): "
+                ).lower()
+                != "y"
+            ):
+                print("Aborted by user.")
+                sys.exit(-1)
+        _x_quick_check = False
     disp_ptr = XOpenDisplay(name)
     if not disp_ptr:
         if verbose:
-            print("Error contacting X Server")
+            print("Error contacting XServer.")
         if quit_on_error:
             sys.exit(-1)
     return disp_ptr
-
-
-pre_test = 0
-if pre_test:
-    # print("Probing for X Server...")
-    _open_display(quit_on_error=True, verbose=True)
 
 
 def simulate(verbose=False):
     display_ptr = _open_display(verbose=verbose)
     if not display_ptr:
         return
-    # screen = XDefaultScreen(display_ptr)
     root_window = XDefaultRootWindow(display_ptr)
     root_wnd, child_wnd = Window(), Window()
     root_x, root_y = cts.c_int(0), cts.c_int(0)
