@@ -6,15 +6,11 @@ import argparse
 import random
 import sys
 
-try:
-    from pycfutils.io import read_key
-    from pycfutils.miscellaneous import timestamp_string
-except ImportError:
-    # @TODO - cfati: Dev repository
-    from pycfutils.pycfutils.io import read_key
-    from pycfutils.pycfutils.miscellaneous import timestamp_string
+from pycfutils.io import read_key
+from pycfutils.miscellaneous import timestamp_string
 
-import gen_evt as ge
+import pyshallow.gen_evt as ge
+
 
 __version_info__ = (0, 0, 0)
 __version__ = ".".join(str(e) for e in __version_info__)
@@ -90,14 +86,13 @@ def main(*argv):
             break
 
 
-if __name__ == "__main__":
-    print(
-        "Python {:s} {:03d}bit on {:s}\n".format(
-            " ".join(item.strip() for item in sys.version.split("\n")),
-            64 if sys.maxsize > 0x100000000 else 32,
-            sys.platform,
-        )
+print(
+    "Python {:s} {:03d}bit on {:s}\n".format(
+        " ".join(item.strip() for item in sys.version.split("\n")),
+        64 if sys.maxsize > 0x100000000 else 32,
+        sys.platform,
     )
-    rc = main(*sys.argv[1:])
-    print("\nDone.\n")
-    sys.exit(rc)
+)
+rc = main(*sys.argv[1:])
+print("\nDone.\n")
+sys.exit(rc)

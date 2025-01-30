@@ -6,11 +6,7 @@ import socket
 import sys
 from ctypes.util import find_library
 
-try:
-    import pycfutils.network as pcun
-except ImportError:
-    # @TODO - cfati: Dev repository
-    import pycfutils.pycfutils.network as pcun
+import pycfutils.network as pcun
 
 
 IntPtr = cts.POINTER(cts.c_int)
