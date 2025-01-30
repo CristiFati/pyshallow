@@ -1,5 +1,0 @@
-[submodule "pycfutils"]
-	path = pycfutils
-	url = git@github.com:CristiFati/pycfutils.git
-	#url = https://github.com/CristiFati/pycfutils.git
-	branch = main
