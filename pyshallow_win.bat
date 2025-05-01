@@ -8,5 +8,5 @@ if defined PYTHONEXE (
     set PYTHONEXE=python
 )
 
-"%PYTHONEXE%" "%~dp0mue_idle.py" %*
+"%PYTHONEXE%" -m pyshallow %*
 
