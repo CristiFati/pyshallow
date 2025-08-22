@@ -1,0 +1,70 @@
+[project]
+authors = [
+  {name = "Cristi Fati", email = "fati_utcluj@yahoo.com"},
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Console",
+  "Operating System :: MacOS",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX",
+  "Operating System :: Unix",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Utilities",
+]
+dependencies = [
+  "pycfutils >= 2025.5.6",
+]
+description = "PyShallow - prevents screen saver / screen lock / turn off from kicking in"
+dynamic = ["version"]
+keywords = [
+  "development",
+  "productivity",
+  "tools",
+  "utilities",
+]
+license = "MIT"
+license-files = [
+    "LICENSE",
+]
+maintainers = [
+  {name = "Cristi Fati", email = "fati_utcluj@yahoo.com"},
+]
+name = "pyshallow"
+readme = "README.md"
+requires-python = ">=3"
+
+[project.urls]
+  Homepage = "https://github.com/CristiFati/pyshallow"
+  Repository = "https://github.com/CristiFati/pyshallow.git"
+  Issues = "https://github.com/CristiFati/pyshallow/issues"
+
+[project.scripts]
+  pyshallow = "pyshallow:main"
+
+[build-system]
+requires = [
+  "setuptools",
+  "wheel",
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+  include = [
+    "pyshallow",
+    "pyshallow.gen_evt",
+  ]
+
+[tool.setuptools.dynamic]
+version = {attr = "pyshallow.version.__version__"}
+
+[tool.poetry.dev-dependencies]
+black = "^22.3.0"
+isort = "^5.11.5"
+flake8 = "^4.0.1"
+
+[tool.isort]
+profile = "black"
+line_length = 100
+atomic = true
