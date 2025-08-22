@@ -1,24 +1,38 @@
 # *PyShallow*
 
-*PyShallow* - prevent screen saver / turn off from kicking in
+*PyShallow* - **prevents** (when possible):
+- Screen saver
+- Screen lock
+- Turn off
+
+from kicking in
 
 
 ## Install
 
-Unzip the (**manually generated**) archive locally. Then launch the entry point script located in the unzipped folder (*PyShallow-#.#.#*):
+Use *PIP* (**starting with *v2025.08.23***):
 
-- *Nix*:
+```commandline
+python -m pip install pyshallow
+```
 
-    ```lang-bash
-    nix_run.sh
+
+## Run
+
+1. Invoke entry-point:
+    ```commandline
+    pyshallow
+    ```
+    entry-point path must be present in *PATH* environment variable (otherwise its fullpath must be specified)
+2. Manually:
+    ```commandline
+    python -m pyshallow
     ```
 
-- *Win*:
 
-    ```lang-bat
-    win_run.bat
-    ```
+## Notes
 
-**Note**:
-
-Also depends on [\[PyPI\]: pycfutils](https://pypi.org/project/pycfutils), but the archive is self-contained.
+- Depends on [\[PyPI\]: pycfutils](https://pypi.org/project/pycfutils).
+- *Linux* (this is the fallback):
+    - Relies on *X11* server running
+- **Use it responsibly** (be aware of all implications)!
