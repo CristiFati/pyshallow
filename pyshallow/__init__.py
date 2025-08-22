@@ -2,7 +2,6 @@
 
 import argparse
 import random
-import sys
 
 from pycfutils.io import read_key
 from pycfutils.miscellaneous import timestamp_string
@@ -24,7 +23,8 @@ def parse_args(*argv):
         "-k",
         default=0.5,
         type=float,
-        help="time (max seconds) needed by the script to become responsive to user input",
+        help="time (max seconds) needed by the script"
+        " to become responsive to user input (keyboard)",
     )
     parser.add_argument(
         "--max_deviation_percent",
@@ -32,10 +32,11 @@ def parse_args(*argv):
         default=10,
         type=int,
         help="maximum base interval deviation percent."
-        " A constant interval might be an indicator for monitoring tools that something fishy is going on."
-        " Adding some randomization, so each interval is different."
-        " Make sure that if an event is required to happen in a certain amount of time,"
-        " base interval + maximum deviation fit into that",
+        " A constant interval might be an indicator for monitoring tools"
+        " that something fishy is going on. Adding some randomization,"
+        " so each interval is different. Make sure that if an event is required to happen"
+        " in a certain amount of time, base interval + maximum deviation fits into that:"
+        " `base_interval * (1 + max_deviation_percent) <= max_event_timeout`",
     )
     parser.add_argument("--verbose", "-v", action="store_true", help="verbose mode")
 
