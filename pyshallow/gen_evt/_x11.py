@@ -8,7 +8,6 @@ from ctypes.util import find_library
 
 import pycfutils.network as pcun
 
-
 IntPtr = cts.POINTER(cts.c_int)
 UIntPtr = cts.POINTER(cts.c_uint)
 DisplayPtr = cts.c_void_p

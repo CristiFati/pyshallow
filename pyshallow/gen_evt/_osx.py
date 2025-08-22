@@ -4,16 +4,11 @@ import ctypes as cts
 import sys
 from ctypes.util import find_library
 
-if sys.maxsize > 0x100000000:
-    CGFloat = cts.c_double
-else:
-    CGFloat = cts.c_float
-
+CGFloat = cts.c_double if sys.maxsize > 0x100000000 else cts.c_float
 UInt32 = cts.c_uint32
 CGEventRef = cts.c_void_p
 CGEventSourceRef = cts.c_void_p
 CGEventTapLocation = UInt32
-
 
 cgSessionEventTap = 1
 mouseMoved = 5
@@ -55,9 +50,10 @@ def simulate(verbose=False):
     global __warn
     if __warn:
         print(
-            '----- If it doesn\'t work, this "application"'
-            " (and also the one(s) launching it (Terminal))"
-            " must be added to the 'Accessibility' permission list -----"
+            "-----"
+            " If it doesn't work, the application running this script"
+            " (e.g. Terminal) must be granted the 'Accessibility' permission"
+            " -----"
         )
         __warn = False
     # evt = CGEventCreateMouseEvent(None, mouseMoved, CGPoint(-1, -1), -1)
