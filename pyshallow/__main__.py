@@ -12,10 +12,6 @@ from pycfutils.miscellaneous import timestamp_string
 import pyshallow.gen_evt as ge
 
 
-__version_info__ = (0, 0, 0)
-__version__ = ".".join(str(e) for e in __version_info__)
-
-
 def parse_args(*argv):
     parser = argparse.ArgumentParser(description="Suppress screen saver / turn off")
     parser.add_argument(
@@ -79,7 +75,7 @@ def main(*argv):
                     timestamp_string(human_readable=False)[2:], interval
                 )
             )
-        res = ge.simulate(verbose=args.verbose)
+        ge.simulate(verbose=args.verbose)
         if read_key(timeout=interval, poll_interval=args.key_interval):
             if args.verbose:
                 print("\nKey pressed. Exiting.")
