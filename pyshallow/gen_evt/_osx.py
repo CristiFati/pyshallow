@@ -21,11 +21,21 @@ class CGPoint(cts.Structure):
     )
 
 
+lib_path = find_library("ApplicationServices")
+if not lib_path:
+    print("Error loading ApplicationServices lib")
+    sys.exit(-1)
+ApplicationServices = cts.CDLL(lib_path)
+
 lib_path = find_library("CoreGraphics")
 if not lib_path:
     print("Error loading Graphics lib")
     sys.exit(-1)
 CoreGraphics = cts.CDLL(lib_path)
+
+AXIsProcessTrusted = ApplicationServices.AXIsProcessTrusted
+AXIsProcessTrusted.argtypes = ()
+AXIsProcessTrusted.restype = cts.c_bool
 
 CGEventCreate = CoreGraphics.CGEventCreate
 CGEventCreate.argtypes = (CGEventSourceRef,)
@@ -43,19 +53,19 @@ CGEventPost = CoreGraphics.CGEventPost
 CGEventPost.argtypes = (CGEventTapLocation, CGEventSourceRef)
 CGEventPost.restype = None
 
-__warn = True
+__warned = False
 
 
 def simulate(verbose=False):
-    global __warn
-    if __warn:
+    global __warned
+    if not __warned and not AXIsProcessTrusted():
         print(
             "-----"
-            " If it doesn't work, the application running this script"
+            " The application running this script"
             " (e.g. Terminal) must be granted the 'Accessibility' permission"
             " -----"
         )
-        __warn = False
+        __warned = True
     # evt = CGEventCreateMouseEvent(None, mouseMoved, CGPoint(-1, -1), -1)
     evt = CGEventCreate(None)
     if not evt:
