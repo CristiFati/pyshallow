@@ -39,6 +39,15 @@ def parse_args(argv: Sequence[str] | None) -> tuple[argparse.Namespace, list[str
         description="Suppress screen saver / lock / turn off"
     )
     parser.add_argument(
+        "--cycle_count",
+        "-c",
+        default=0,
+        type=int,
+        help="number of run/wait cycles to perform."
+        " Only applicable when both run_timeout and wait_timeout are positive."
+        " Default: 0 (unlimited)",
+    )
+    parser.add_argument(
         "--key_interval",
         "-k",
         default=default_key_interval,
@@ -61,8 +70,8 @@ def parse_args(argv: Sequence[str] | None) -> tuple[argparse.Namespace, list[str
         f" Default: {default_deviation_percent} (%%)",
     )
     parser.add_argument(
-        "-t",
         "--run_timeout",
+        "-t",
         help="program execution (run) timeout (stop once it elapses)."
         " Can be provided as a number of seconds (integer) or using the"
         " `[h:]m:s` format, hours (if given) having no restrictions (can be higher than 24)."
@@ -78,10 +87,10 @@ def parse_args(argv: Sequence[str] | None) -> tuple[argparse.Namespace, list[str
     )
     parser.add_argument("--verbose", "-v", action="store_true", help="verbose mode")
     parser.add_argument(
-        "-w",
         "--wait_timeout",
+        "-w",
         help="wait (idle) timeout between run cycles."
-        " Only effective when run_timeout is also given and positive."
+        " Only applicable when run_timeout is also given and positive."
         " Can be provided as a number of seconds (integer) or using the"
         " `[h:]m:s` format, hours (if given) having no restrictions (can be higher than 24)."
         " Default: no wait (0)",
@@ -105,6 +114,11 @@ def parse_args(argv: Sequence[str] | None) -> tuple[argparse.Namespace, list[str
     if args.run_timeout == 0 and args.wait_timeout > 0:
         print("Warning: Wait timeout specifies when run timeout is 0. Ignoring")
         args.wait_timeout = 0
+    if (args.run_timeout == 0 or args.wait_timeout == 0) and args.cycle_count > 0:
+        print(
+            "Warning: Cycle count specified without both timeouts being positive. Ignoring"
+        )
+        args.cycle_count = 0
     return args, unk
 
 
@@ -171,8 +185,14 @@ def run(args: argparse.Namespace) -> int:
     )
 
     if args.run_timeout and args.wait_timeout:
+        cycle = 0
         while True:
+            cycle += 1
             if _run(*run_args):
+                break
+            if 0 < args.cycle_count <= cycle:
+                if args.verbose:
+                    print(f"\nCycle count ({args.cycle_count}) reached. Exiting.")
                 break
             if args.verbose:
                 print(
