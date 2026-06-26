@@ -10,21 +10,30 @@ from pycfutils.miscellaneous import timestamp_string
 import pyshallow.gen_evt as ge
 
 
-def parse_args(*argv):
+def _parse_timeout(value, parser):
+    if not value:
+        return 0
+    if value.isdecimal():
+        return int(value)
+    parts = tuple(e.strip() for e in value.split(":"))
+    if not parts or len(parts) > 3 or not all(e.isdecimal() for e in parts):
+        parser.exit(status=-1, message="Invalid h:m:s specification\n")
+    parts = tuple(int(e) for e in parts)
+    if parts[-1] > 59 or parts[-2] > 59:
+        parser.exit(status=-1, message="Invalid minutes or seconds\n")
+    result = parts[-1] + parts[-2] * 60
+    if len(parts) == 3:
+        result += parts[0] * 3600
+    return result
+
+
+def parse_args(argv):
     default_trigger_interval = 180
     default_key_interval = 0.5
     default_deviation_percent = 10
 
     parser = argparse.ArgumentParser(
         description="Suppress screen saver / lock / turn off"
-    )
-    parser.add_argument(
-        "--trigger_interval",
-        "-i",
-        default=default_trigger_interval,
-        type=int,
-        help="interval (seconds) between 2 consecutive events generation."
-        f" Default: {default_trigger_interval} second(s)",
     )
     parser.add_argument(
         "--key_interval",
@@ -45,20 +54,37 @@ def parse_args(*argv):
         " that something fishy is going on. Adding some randomization,"
         " so each interval is different. Make sure that if an event is required to happen"
         " in a certain amount of time, base interval + maximum deviation fits into that:"
-        " `trigger_interval * (1 + max_deviation_percent) <= event_occurrence_timeout`."
+        " `trigger_interval * (1 + max_deviation_percent / 100) <= event_occurrence_timeout`."
         f" Default: {default_deviation_percent} (%%)",
     )
     parser.add_argument(
         "-t",
-        "--timeout",
+        "--run_timeout",
         help="program execution (run) timeout (stop once it elapses)."
         " Can be provided as a number of seconds (integer) or using the"
         " `[h:]m:s` format, hours (if given) having no restrictions (can be higher than 24)."
         " Default: never timeout (0)",
     )
+    parser.add_argument(
+        "--trigger_interval",
+        "-i",
+        default=default_trigger_interval,
+        type=int,
+        help="interval (seconds) between 2 consecutive events generation."
+        f" Default: {default_trigger_interval} second(s)",
+    )
     parser.add_argument("--verbose", "-v", action="store_true", help="verbose mode")
+    parser.add_argument(
+        "-w",
+        "--wait_timeout",
+        help="wait (idle) timeout between run cycles."
+        " Only effective when run_timeout is also given and positive."
+        " Can be provided as a number of seconds (integer) or using the"
+        " `[h:]m:s` format, hours (if given) having no restrictions (can be higher than 24)."
+        " Default: no wait (0)",
+    )
 
-    args, unk = parser.parse_known_args()
+    args, unk = parser.parse_known_args(argv)
     if unk:
         print("Warning: Ignoring unknown arguments: {:}".format(unk))
 
@@ -70,50 +96,44 @@ def parse_args(*argv):
         parser.exit(
             status=-1, message="Key interval can be at most half of trigger interval\n"
         )
-    if args.timeout:
-        if args.timeout.isdecimal():
-            args.timeout = int(args.timeout)
-        else:
-            parts = tuple(e.strip() for e in args.timeout.split(":"))
-            if not parts or len(parts) > 3 or not all(e.isdecimal() for e in parts):
-                parser.exit(status=-1, message="Invalid h:m:s specification\n")
-            parts = tuple(int(e) for e in parts)
-            if parts[-1] > 59 or parts[-2] > 59:
-                parser.exit(status=-1, message="Invalid minutes or seconds\n")
-            args.timeout = parts[-1] + parts[-2] * 60
-            if len(parts) == 3:
-                args.timeout += parts[0] * 3600
-    else:
-        args.timeout = 0
+    args.run_timeout = _parse_timeout(args.run_timeout, parser)
+    args.wait_timeout = _parse_timeout(args.wait_timeout, parser)
 
     return args, unk
 
 
-def generate_interval(base, deviation_percent):
+def _generate_interval(base, deviation_percent):
     max_dev = base * deviation_percent / 100
     dev = max_dev * 2 * random.random()
     return max(round(base - max_dev + dev), 1)
 
 
-def run(trigger_interval, key_interval, max_deviation_percent, timeout, verbose):
+def _run(
+    trigger_interval,
+    key_interval,
+    max_deviation_percent,
+    run_timeout,
+    wait_timeout,
+    verbose,
+):
     verbose_text_pat = (
-        "\n{:s}\nAttempting to (fakely) move the mouse in {:.0f} second(s).\n"
+        "\n{:s}\nAttempting to generate a synthetic event in {:.0f} second(s).\n"
         "  At any point, press any key to interrupt..."
     )
-    if timeout > 0 and verbose:
-        print(f"\nWill run for {timeout} second(s)...")
+    if run_timeout > 0 and wait_timeout == 0 and verbose:
+        print(f"\nWill run for {run_timeout} second(s)...")
     start_time = time.time()
     while True:
-        interval = generate_interval(trigger_interval, max_deviation_percent)
-        if timeout > 0:
+        interval = _generate_interval(trigger_interval, max_deviation_percent)
+        if run_timeout > 0:
             elapsed = time.time() - start_time
-            remaining = timeout - elapsed
+            remaining = run_timeout - elapsed
             if remaining <= 0:
-                if verbose:
+                if wait_timeout == 0 and verbose:
                     print(f"\nTimeout ({elapsed:.0f} second(s)) reached. Exiting.")
-                break
+                return False
             elif remaining < interval:
-                if verbose:
+                if wait_timeout == 0 and verbose:
                     print("\nAdjusting intervals to fit in remaining timeout")
                 interval = remaining
                 key_interval = min(key_interval, interval / 2)
@@ -124,18 +144,54 @@ def run(trigger_interval, key_interval, max_deviation_percent, timeout, verbose)
                 )
             )
         ge.simulate(verbose=verbose)
-        if read_key(timeout=interval, poll_interval=key_interval):
+        if read_key(timeout=interval, poll_interval=key_interval) is not None:
             if verbose:
                 print("\nKey pressed. Exiting.")
-            break
+            return True
+
+
+def run(args):
+    verbose_wait_text_pat = (
+        "\n{:s}\nAttempting to wait for {:.0f} second(s).\n"
+        "  At any point, press any key to interrupt..."
+    )
+
+    if args.run_timeout and args.wait_timeout:
+        while True:
+            if _run(
+                args.trigger_interval,
+                args.key_interval,
+                args.max_deviation_percent,
+                args.run_timeout,
+                args.wait_timeout,
+                args.verbose,
+            ):
+                break
+            if args.verbose:
+                print(
+                    verbose_wait_text_pat.format(
+                        timestamp_string(human_readable=False)[2:], args.wait_timeout
+                    )
+                )
+            if (
+                read_key(timeout=args.wait_timeout, poll_interval=args.key_interval)
+                is not None
+            ):
+                if args.verbose:
+                    print("\nKey pressed. Exiting.")
+                break
+    else:
+        _run(
+            args.trigger_interval,
+            args.key_interval,
+            args.max_deviation_percent,
+            args.run_timeout,
+            args.wait_timeout,
+            args.verbose,
+        )
+    return 0
 
 
 def main(*argv):
-    args, _ = parse_args()
-    run(
-        args.trigger_interval,
-        args.key_interval,
-        args.max_deviation_percent,
-        args.timeout,
-        args.verbose,
-    )
+    args, _ = parse_args(argv or None)
+    return run(args)
