@@ -1,8 +1,11 @@
 # Idle bypass script by (pussious) cfati
 
+from __future__ import annotations
+
 import argparse
 import random
 import time
+from collections.abc import Sequence
 
 from pycfutils.io import read_key
 from pycfutils.miscellaneous import timestamp_string
@@ -10,7 +13,7 @@ from pycfutils.miscellaneous import timestamp_string
 import pyshallow.gen_evt as ge
 
 
-def _parse_timeout(value, parser):
+def _parse_timeout(value: str | None, parser: argparse.ArgumentParser) -> int:
     if not value:
         return 0
     if value.isdecimal():
@@ -27,7 +30,7 @@ def _parse_timeout(value, parser):
     return result
 
 
-def parse_args(argv):
+def parse_args(argv: Sequence[str] | None) -> tuple[argparse.Namespace, list[str]]:
     default_trigger_interval = 180
     default_key_interval = 0.5
     default_deviation_percent = 10
@@ -105,20 +108,20 @@ def parse_args(argv):
     return args, unk
 
 
-def _generate_interval(base, deviation_percent):
+def _generate_interval(base: int, deviation_percent: int) -> int:
     max_dev = base * deviation_percent / 100
     dev = max_dev * 2 * random.random()
     return max(round(base - max_dev + dev), 1)
 
 
 def _run(
-    trigger_interval,
-    key_interval,
-    max_deviation_percent,
-    run_timeout,
-    wait_timeout,
-    verbose,
-):
+    trigger_interval: int,
+    key_interval: float,
+    max_deviation_percent: int,
+    run_timeout: int,
+    wait_timeout: int,
+    verbose: bool,
+) -> bool:
     verbose_text_pat = (
         "\n{:s}\nAttempting to generate a synthetic event in {:.0f} second(s).\n"
         "  At any point, press any key to interrupt..."
@@ -153,7 +156,7 @@ def _run(
             return True
 
 
-def run(args):
+def run(args: argparse.Namespace) -> int:
     verbose_wait_text_pat = (
         "\n{:s}\nAttempting to wait for {:.0f} second(s).\n"
         "  At any point, press any key to interrupt..."
@@ -189,6 +192,6 @@ def run(args):
     return 0
 
 
-def main(*argv):
+def main(*argv) -> int:
     args, _ = parse_args(argv or None)
     return run(args)

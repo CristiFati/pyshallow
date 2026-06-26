@@ -1,9 +1,11 @@
 # !!! WiP !!! Android idle bypass script by (pussious) cfati
 
+from __future__ import annotations
+
 import sys
 
 
-def simulate(verbose=False):
+def simulate(verbose: bool = False) -> None:
     print("Platform not supported!")
     sys.exit(-1)
 

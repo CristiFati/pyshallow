@@ -1,5 +1,7 @@
 # Nix (X11) idle bypass script by (pussious) cfati
 
+from __future__ import annotations
+
 import ctypes as cts
 import os
 import socket
@@ -69,7 +71,7 @@ XCloseDisplay.restype = None
 _x_quick_check = True
 
 
-def _is_x_server_listening():
+def _is_x_server_listening() -> bool:
     fails = (ConnectionRefusedError, socket.timeout)
     hds = os.environ.get("DISPLAY", "").split(":")
     host = "localhost"
@@ -88,7 +90,9 @@ def _is_x_server_listening():
     return True
 
 
-def _open_display(name=None, quit_on_error=False, verbose=False):
+def _open_display(
+    name: str | None = None, quit_on_error: bool = False, verbose: bool = False
+) -> cts.c_void_p | None:
     global _x_quick_check
     if _x_quick_check:
         if not _is_x_server_listening():
@@ -111,7 +115,7 @@ def _open_display(name=None, quit_on_error=False, verbose=False):
     return disp_ptr
 
 
-def simulate(verbose=False):
+def simulate(verbose: bool = False) -> None:
     display_ptr = _open_display(verbose=verbose)
     if not display_ptr:
         return

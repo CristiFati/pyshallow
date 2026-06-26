@@ -1,5 +1,7 @@
 # OSX idle bypass script by (pussious) cfati
 
+from __future__ import annotations
+
 import atexit
 import ctypes as cts
 import sys
@@ -90,7 +92,7 @@ _ax_checked = False
 _ax_trusted = False
 
 
-def _check_accessibility():
+def _check_accessibility() -> bool:
     global _ax_checked, _ax_trusted
     if _ax_checked:
         return _ax_trusted
@@ -126,7 +128,7 @@ def _check_accessibility():
     return _ax_trusted
 
 
-def simulate(verbose=False):
+def simulate(verbose: bool = False) -> None:
     _check_accessibility()
     # evt = CGEventCreateMouseEvent(None, mouseMoved, CGPoint(-1, -1), -1)
     evt = CGEventCreate(None)

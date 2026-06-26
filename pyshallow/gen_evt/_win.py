@@ -1,5 +1,7 @@
 # Win idle bypass script by (pussious) cfati
 
+from __future__ import annotations
+
 import ctypes as cts
 import sys
 from ctypes import wintypes as wts
@@ -52,7 +54,7 @@ SendInput.argtypes = (wts.UINT, cts.POINTER(INPUT), cts.c_int)
 SendInput.restype = wts.UINT
 
 
-def simulate(verbose=False):
+def simulate(verbose: bool = False) -> None:
     point = wts.POINT()
     res = GetCursorPos(cts.byref(point))
     if verbose:
