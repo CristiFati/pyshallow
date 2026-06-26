@@ -59,9 +59,9 @@ def simulate(verbose: bool = False) -> None:
     res = GetCursorPos(cts.byref(point))
     if verbose:
         if res:
-            print("Mouse at ({:d}, {:d}).".format(point.x, point.y))
+            print(f"Mouse at ({point.x:d}, {point.y:d}).")
         else:
-            print("Error ({:d}) getting cursor position.".format(GetLastError()))
+            print(f"Error ({GetLastError():d}) getting cursor position.")
     _input = INPUT()
     _input.type = INPUT_MOUSE
     _input.mi.dx = 0
@@ -73,7 +73,7 @@ def simulate(verbose: bool = False) -> None:
         if res:
             print("Sent fake mouse move event.")
         else:
-            print("Error ({:d}) setting cursor position.".format(GetLastError()))
+            print(f"Error ({GetLastError():d}) setting cursor position.")
 
 
 if __name__ == "__main__":

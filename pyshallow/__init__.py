@@ -98,7 +98,7 @@ def parse_args(argv: Sequence[str] | None) -> tuple[argparse.Namespace, list[str
 
     args, unk = parser.parse_known_args(argv)
     if unk:
-        print("Warning: Ignoring unknown arguments: {:}".format(unk))
+        print(f"Warning: Ignoring unknown arguments: {unk}")
 
     if args.max_deviation_percent < 0:
         parser.exit(status=-1, message="Percent must be non negative\n")

@@ -140,7 +140,7 @@ def simulate(verbose: bool = False) -> None:
     # ret = CGDisplayMoveCursorToPoint(CGMainDisplayID(), pt) == success
     # ret = CGWarpMouseCursorPosition(pt) == success
     if verbose:
-        print("Mouse at ({:d}, {:d}).".format(round(pt.x), round(pt.y)))
+        print(f"Mouse at ({round(pt.x):d}, {round(pt.y):d}).")
     CGEventPost(cgSessionEventTap, evt)
     if verbose:
         print("Sent fake mouse move event.")

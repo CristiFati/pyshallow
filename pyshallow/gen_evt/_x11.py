@@ -138,7 +138,7 @@ def simulate(verbose: bool = False) -> None:
     )
     if verbose:
         if res:
-            print("Mouse at ({:d}, {:d}).".format(root_x.value, root_y.value))
+            print(f"Mouse at ({root_x.value:d}, {root_y.value:d}).")
         else:
             print("Error getting cursor position.")
 
