@@ -1,38 +1,48 @@
-# *PyShallow*
+# PyShallow
 
-*PyShallow* - **prevents** (when possible):
-- Screen saver
-- Screen lock
-- Turn off
+[![PyPI version](https://img.shields.io/pypi/v/pyshallow)](https://pypi.org/project/pyshallow)
+[![Python versions](https://img.shields.io/pypi/pyversions/pyshallow)](https://pypi.org/project/pyshallow)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-from kicking in
-
+**PyShallow** prevents screen saver, screen lock, and display turn-off from kicking in.
 
 ## Install
 
-Use *PIP* (**starting with *v2025.08.23***):
-
-```commandline
-python -m pip install pyshallow
+```shell
+python -m pip install --upgrade pyshallow
 ```
 
+## Usage
 
-## Run
+Entry-point (must be in *PATH*):
 
-1. Invoke entry-point:
-    ```commandline
-    pyshallow
-    ```
-    entry-point path must be present in *PATH* environment variable (otherwise its fullpath must be specified)
-2. Manually:
-    ```commandline
-    python -m pyshallow
-    ```
+```shell
+pyshallow
+```
 
+As a module:
+
+```shell
+python -m pyshallow
+```
+
+For available options:
+
+```shell
+pyshallow --help
+```
 
 ## Notes
 
-- Depends on [\[PyPI\]: pycfutils](https://pypi.org/project/pycfutils).
-- *Linux* (this is the fallback):
-    - Relies on *X11* server running
-- **Use it responsibly** (be aware of all implications)!
+- Supports **macOS**, **Windows**, and **Linux** (X11)
+
+- Depends on [pycfutils](https://pypi.org/project/pycfutils)
+- **Use it responsibly** (be aware of all implications)
+
+## Contributing
+
+Contributions are welcome. Please open an issue or submit a pull request on [GitHub](https://github.com/CristiFati/pyshallow).
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
