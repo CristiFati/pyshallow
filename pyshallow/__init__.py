@@ -99,6 +99,9 @@ def parse_args(argv):
     args.run_timeout = _parse_timeout(args.run_timeout, parser)
     args.wait_timeout = _parse_timeout(args.wait_timeout, parser)
 
+    if args.run_timeout == 0 and args.wait_timeout > 0:
+        print("Warning: Wait timeout specifies when run timeout is 0. Ignoring")
+        args.wait_timeout = 0
     return args, unk
 
 
@@ -155,17 +158,18 @@ def run(args):
         "\n{:s}\nAttempting to wait for {:.0f} second(s).\n"
         "  At any point, press any key to interrupt..."
     )
+    run_args = (
+        args.trigger_interval,
+        args.key_interval,
+        args.max_deviation_percent,
+        args.run_timeout,
+        args.wait_timeout,
+        args.verbose,
+    )
 
     if args.run_timeout and args.wait_timeout:
         while True:
-            if _run(
-                args.trigger_interval,
-                args.key_interval,
-                args.max_deviation_percent,
-                args.run_timeout,
-                args.wait_timeout,
-                args.verbose,
-            ):
+            if _run(*run_args):
                 break
             if args.verbose:
                 print(
@@ -181,14 +185,7 @@ def run(args):
                     print("\nKey pressed. Exiting.")
                 break
     else:
-        _run(
-            args.trigger_interval,
-            args.key_interval,
-            args.max_deviation_percent,
-            args.run_timeout,
-            args.wait_timeout,
-            args.verbose,
-        )
+        _run(*run_args)
     return 0
 
 

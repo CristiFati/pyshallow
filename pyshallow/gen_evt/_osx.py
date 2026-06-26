@@ -66,7 +66,7 @@ CFRelease.argtypes = (CGEventRef,)
 CFRelease.restype = None
 
 CGEventPost = CoreGraphics.CGEventPost
-CGEventPost.argtypes = (CGEventTapLocation, CGEventSourceRef)
+CGEventPost.argtypes = (CGEventTapLocation, CGEventRef)
 CGEventPost.restype = None
 
 CFStringCreateWithCString = CoreGraphics.CFStringCreateWithCString
@@ -115,13 +115,13 @@ def _check_accessibility():
         CFRelease(assertion_type)
         if res == 0:
             atexit.register(IOPMAssertionRelease, assertion_id.value)
-        print(
-            "\n-----"
-            " The application running this script"
-            " (e.g. Terminal) is not granted the 'Accessibility' permission,"
-            " falling back to display sleep assertion (some features might not work)"
-            " -----\n"
-        )
+            print(
+                "\n-----"
+                " The application running this script"
+                " (e.g. Terminal) is not granted the 'Accessibility' permission,"
+                " falling back to display sleep assertion (some features might not work)"
+                " -----\n"
+            )
     _ax_checked = True
     return _ax_trusted
 
