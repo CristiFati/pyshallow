@@ -12,6 +12,13 @@
 python -m pip install --upgrade pyshallow
 ```
 
+## Standalone executables
+
+Pre-built executables (built with [PyInstaller](https://pyinstaller.org)) are available on the [Releases](https://github.com/CristiFati/pyshallow/releases) page.
+
+- Linux: a `.desktop` launcher and (.png) icon are available in the [`assets/linux`](assets/linux) directory
+- macOS: an `.icns` icon is available in the [`assets/macos`](assets/macos) directory
+
 ## Usage
 
 Entry-point (must be in *PATH*):
@@ -26,6 +33,12 @@ As a module:
 python -m pyshallow
 ```
 
+Standalone executable:
+
+```shell
+./PyShallow-<version>-<platform>-<arch>-<pyver>
+```
+
 For available options:
 
 ```shell
@@ -35,9 +48,10 @@ pyshallow --help
 ## Notes
 
 - Supports **Linux** (X11), **Windows** and **macOS**.
-
 - Depends on [PyCFUtils](https://pypi.org/project/pycfutils)
 - **Use it responsibly** (be aware of all implications)
+- Parts of code assisted by [Claude Code](https://claude.ai/code)
+- Icon/logo generated with [ChatGPT](https://chatgpt.com)
 
 ## Contributing
 

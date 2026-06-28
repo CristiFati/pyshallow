@@ -1,0 +1,16 @@
+# Desktop file: https://specifications.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html
+# @TODO - cfati:
+#   - REPLACE ${_PYSHALLOW_EXE} and ${_PYSHALLOW_ICON} (dummy variables) by the actual paths (on target machine)
+#   - SymLink file in ~/.local/share/applications
+
+[Desktop Entry]
+Type=Application
+Name=PyShallow
+GenericName=Hecar Tool
+Comment=Stay Awake!
+Exec=${_PYSHALLOW_EXE} -v
+#Exec=/mnt/e/Work/Dev/Repos/GitHub/CristiFati/pyshallow/src/dist/PyShallow-2026.06.29-linux-x86_64 -v
+Icon=${_PYSHALLOW_ICON}
+#Icon="/mnt/e/Work/Dev/Repos/GitHub/CristiFati/pyshallow/src/assets/linux/pyshallow.png
+Terminal=true
+Categories=Utility;Application;

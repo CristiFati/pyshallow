@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1254" height="1254" viewBox="0 0 1254 1254">
+  <defs>
+    <linearGradient id="bg" x1="627" y1="7" x2="627" y2="1246" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0B2748"/>
+      <stop offset="0.35" stop-color="#061F3A"/>
+      <stop offset="0.70" stop-color="#03182E"/>
+      <stop offset="1" stop-color="#02101F"/>
+    </linearGradient>
+
+    <radialGradient id="bgTopGlow" cx="627" cy="240" r="760" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#123A63" stop-opacity="0.28"/>
+      <stop offset="0.55" stop-color="#092642" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#092642" stop-opacity="0"/>
+    </radialGradient>
+
+    <linearGradient id="screen" x1="627" y1="424" x2="627" y2="898" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#06213D"/>
+      <stop offset="0.55" stop-color="#041A32"/>
+      <stop offset="1" stop-color="#020F1F"/>
+    </linearGradient>
+
+    <linearGradient id="metal" x1="228" y1="385" x2="1026" y2="936" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F5F5F6"/>
+      <stop offset="0.22" stop-color="#D7D8DB"/>
+      <stop offset="0.48" stop-color="#B9BBC0"/>
+      <stop offset="0.73" stop-color="#E4E4E6"/>
+      <stop offset="1" stop-color="#B9BBC0"/>
+    </linearGradient>
+
+    <linearGradient id="stand" x1="624" y1="936" x2="624" y2="1042" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#BFC1C6"/>
+      <stop offset="0.45" stop-color="#EFEFF1"/>
+      <stop offset="1" stop-color="#A4A7AD"/>
+    </linearGradient>
+
+    <linearGradient id="green" x1="500" y1="490" x2="750" y2="825" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8DFA2A"/>
+      <stop offset="0.50" stop-color="#65E216"/>
+      <stop offset="1" stop-color="#43C30C"/>
+    </linearGradient>
+
+    <linearGradient id="greenRays" x1="440" y1="170" x2="812" y2="325" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8DFA2A"/>
+      <stop offset="1" stop-color="#48C90E"/>
+    </linearGradient>
+
+    <filter id="shadowSoft" x="-20%" y="-20%" width="140%" height="150%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#000000" flood-opacity="0.32"/>
+    </filter>
+
+    <filter id="greenShadow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.20"/>
+    </filter>
+
+    <filter id="rayShadow" x="-20%" y="-20%" width="140%" height="160%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.30"/>
+    </filter>
+  </defs>
+
+  <!-- Transparent corners are preserved because only this rounded rectangle is drawn. -->
+  <rect x="12" y="7" width="1230" height="1239" rx="196" ry="196" fill="url(#bg)"/>
+  <rect x="12" y="7" width="1230" height="1239" rx="196" ry="196" fill="url(#bgTopGlow)"/>
+
+<!-- Success rays -->
+<g filter="url(#rayShadow)" stroke="url(#greenRays)" stroke-width="39" stroke-linecap="round">
+  <line x1="623.92" y1="197" x2="624.07" y2="295"/>
+  <line x1="455.57" y1="240.55" x2="508.81" y2="310.65"/>
+  <line x1="794.28" y1="240.57" x2="739.73" y2="310.22"/>
+</g>  <!-- Monitor and stand -->
+  <g filter="url(#shadowSoft)">
+    <!-- Screen first -->
+    <rect x="243" y="425" width="766" height="473" rx="26" fill="url(#screen)"/>
+
+    <!-- Outer monitor bezel as a ring using evenodd -->
+    <path fill-rule="evenodd" clip-rule="evenodd"
+      d="M256 386H996C1025.82 386 1050 410.18 1050 440V883C1050 912.82 1025.82 937 996 937H256C226.18 937 202 912.82 202 883V440C202 410.18 226.18 386 256 386ZM269 425C254.64 425 243 436.64 243 451V872C243 886.36 254.64 898 269 898H983C997.36 898 1009 886.36 1009 872V451C1009 436.64 997.36 425 983 425H269Z"
+      fill="url(#metal)"/>
+
+    <path d="M548 937H704L711 1010H537L548 937Z" fill="url(#stand)"/>
+    <rect x="462" y="1003" width="325" height="39" rx="19.5" fill="url(#stand)"/>
+  </g>
+
+  <!-- Green confirmation circle -->
+  <g filter="url(#greenShadow)">
+    <circle cx="625.34" cy="654.66" r="175" fill="url(#green)"/>
+  </g>
+
+  <!-- Checkmark -->
+  <path d="M550 666L603 720L718 601"
+        fill="none"
+        stroke="#F7F7F8"
+        stroke-width="43.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+</svg>
