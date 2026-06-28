@@ -89,7 +89,8 @@ def parse_args(argv: Sequence[str] | None) -> tuple[argparse.Namespace, list[str
     parser.add_argument(
         "--wait_timeout",
         "-w",
-        help="wait (idle) timeout between run cycles."
+        help="EXPERIMENTAL: wait (idle) timeout between run cycles."
+        " Some features might not work when screen lock is active."
         " Only applicable when run_timeout is also given and positive."
         " Can be provided as a number of seconds (integer) or using the"
         " `[h:]m:s` format, hours (if given) having no restrictions (can be higher than 24)."
@@ -183,6 +184,9 @@ def run(args: argparse.Namespace) -> int:
         args.wait_timeout,
         args.verbose,
     )
+
+    if not args.verbose:
+        print("Running PyShallow.\n  At any point, press any key to interrupt...")
 
     if args.run_timeout and args.wait_timeout:
         cycle = 0

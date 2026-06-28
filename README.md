@@ -4,7 +4,7 @@
 [![Python versions](https://img.shields.io/pypi/pyversions/pyshallow)](https://pypi.org/project/pyshallow)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-**PyShallow** prevents screen saver, screen lock, and display turn-off from kicking in.
+**PyShallow** prevents screen saver, screen lock, idle sleep from kicking in.
 
 ## Install
 
@@ -34,9 +34,9 @@ pyshallow --help
 
 ## Notes
 
-- Supports **macOS**, **Windows**, and **Linux** (X11)
+- Supports **Linux** (X11), **Windows** and **macOS**.
 
-- Depends on [pycfutils](https://pypi.org/project/pycfutils)
+- Depends on [PyCFUtils](https://pypi.org/project/pycfutils)
 - **Use it responsibly** (be aware of all implications)
 
 ## Contributing

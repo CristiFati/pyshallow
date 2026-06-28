@@ -120,8 +120,8 @@ def _check_accessibility() -> bool:
             print(
                 "\n-----"
                 " The application running this script"
-                " (e.g. Terminal) is not granted the 'Accessibility' permission,"
-                " falling back to display sleep assertion (some features might not work)"
+                " (e.g. Terminal) is not granted the 'Accessibility' permission."
+                " Falling back to display sleep assertion (some features might not work)"
                 " -----\n"
             )
     _ax_checked = True
