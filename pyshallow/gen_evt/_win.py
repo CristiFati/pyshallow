@@ -54,7 +54,11 @@ SendInput.argtypes = (wts.UINT, cts.POINTER(INPUT), cts.c_int)
 SendInput.restype = wts.UINT
 
 
-def simulate(verbose: bool = False) -> None:
+def cleanup() -> None:
+    pass
+
+
+def simulate(verbose: bool = False) -> bool:
     point = wts.POINT()
     res = GetCursorPos(cts.byref(point))
     if verbose:
@@ -71,9 +75,10 @@ def simulate(verbose: bool = False) -> None:
     res = SendInput(event_count, cts.pointer(_input), cts.sizeof(INPUT))
     if verbose:
         if res:
-            print("Sent fake mouse move event.")
+            print("Generated synthetic event.")
         else:
-            print(f"Error ({GetLastError():d}) setting cursor position.")
+            print(f"Error ({GetLastError():d}) generating synthetic event.")
+    return True
 
 
 if __name__ == "__main__":

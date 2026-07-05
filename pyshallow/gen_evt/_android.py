@@ -5,9 +5,13 @@ from __future__ import annotations
 import sys
 
 
-def simulate(verbose: bool = False) -> None:
+def cleanup() -> None:
+    pass
+
+
+def simulate(verbose: bool = False) -> bool:
     print("Platform not supported!")
-    sys.exit(-1)
+    return False
 
 
 if __name__ == "__main__":

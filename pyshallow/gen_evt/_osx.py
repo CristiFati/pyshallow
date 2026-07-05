@@ -90,52 +90,73 @@ IOPMAssertionRelease.restype = IOReturn
 
 _ax_checked = False
 _ax_trusted = False
+_assertion_id = None
+
+
+def _acquire_assertion() -> None:
+    global _assertion_id
+    if _assertion_id is not None:
+        return
+    assertion_type = CFStringCreateWithCString(
+        None,
+        kIOPMAssertionTypePreventUserIdleDisplaySleep,
+        kCFStringEncodingUTF8,
+    )
+    assertion_name = CFStringCreateWithCString(
+        None, b"pyshallow", kCFStringEncodingUTF8
+    )
+    aid = IOPMAssertionID()
+    res = IOPMAssertionCreateWithName(
+        assertion_type,
+        kIOPMAssertionLevelOn,
+        assertion_name,
+        cts.byref(aid),
+    )
+    CFRelease(assertion_name)
+    CFRelease(assertion_type)
+    if res == 0:
+        _assertion_id = aid.value
+        atexit.register(_release_assertion)
+
+
+def _release_assertion() -> None:
+    global _assertion_id
+    if _assertion_id is not None:
+        IOPMAssertionRelease(_assertion_id)
+        _assertion_id = None
+
+
+def cleanup() -> None:
+    _release_assertion()
 
 
 def _check_accessibility() -> bool:
     global _ax_checked, _ax_trusted
     if _ax_checked:
+        if not _ax_trusted:
+            _acquire_assertion()
         return _ax_trusted
     _ax_trusted = AXIsProcessTrusted()
     if not _ax_trusted:
-        assertion_type = CFStringCreateWithCString(
-            None,
-            kIOPMAssertionTypePreventUserIdleDisplaySleep,
-            kCFStringEncodingUTF8,
-        )
-        assertion_name = CFStringCreateWithCString(
-            None, b"pyshallow", kCFStringEncodingUTF8
-        )
-        assertion_id = IOPMAssertionID()
-        res = IOPMAssertionCreateWithName(
-            assertion_type,
-            kIOPMAssertionLevelOn,
-            assertion_name,
-            cts.byref(assertion_id),
-        )
-        CFRelease(assertion_name)
-        CFRelease(assertion_type)
-        if res == 0:
-            atexit.register(IOPMAssertionRelease, assertion_id.value)
+        _acquire_assertion()
+        if _assertion_id is not None:
             print(
-                "\n-----"
-                " The application running this script"
+                "\nThe application running this script"
                 " (e.g. Terminal) is not granted the 'Accessibility' permission."
-                " Falling back to display sleep assertion (some features might not work)"
-                " -----\n"
+                " Falling back to display sleep assertion (some features might not work).\n"
             )
     _ax_checked = True
     return _ax_trusted
 
 
-def simulate(verbose: bool = False) -> None:
+def simulate(verbose: bool = False) -> bool:
     _check_accessibility()
     # evt = CGEventCreateMouseEvent(None, mouseMoved, CGPoint(-1, -1), -1)
     evt = CGEventCreate(None)
     if not evt:
         if verbose:
-            print("Error setting cursor position.")
-        return
+            print("Error generating synthetic event.")
+        return True
     pt = CGEventGetLocation(evt)
     # ret = CGDisplayMoveCursorToPoint(CGMainDisplayID(), pt) == success
     # ret = CGWarpMouseCursorPosition(pt) == success
@@ -143,8 +164,9 @@ def simulate(verbose: bool = False) -> None:
         print(f"Mouse at ({round(pt.x):d}, {round(pt.y):d}).")
     CGEventPost(cgSessionEventTap, evt)
     if verbose:
-        print("Sent fake mouse move event.")
+        print("Generated synthetic event.")
     CFRelease(evt)
+    return True
 
 
 if __name__ == "__main__":

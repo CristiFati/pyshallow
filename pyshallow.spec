@@ -33,6 +33,7 @@ _architectures = {
         ("x86_64", 32): "i686",
         ("i686", 32): "i686",
         ("aarch64", 64): "arm64",
+        ("aarch", 32): "arm32",
         ("arm", 32): "arm32",
     },
     PLATFORM_MACOS: {
@@ -118,7 +119,7 @@ exe = EXE(
     console=True,
     disable_windowed_traceback=False,
     argv_emulation=False,
-    target_arch=None,
+    target_arch="universal2" if _platform == PLATFORM_MACOS else None,
     codesign_identity=None,
     entitlements_file=None,
     icon=_icon,

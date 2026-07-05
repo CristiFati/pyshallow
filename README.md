@@ -14,10 +14,11 @@ python -m pip install --upgrade pyshallow
 
 ## Standalone executables
 
-Pre-built executables (built with [PyInstaller](https://pyinstaller.org)) are available on the [Releases](https://github.com/CristiFati/pyshallow/releases) page.
+Starting with **v2026.07.05**, pre-built executables (built with [PyInstaller](https://pyinstaller.org)) are available on the [Releases](https://github.com/CristiFati/pyshallow/releases) page.
 
-- Linux: a `.desktop` launcher and (.png) icon are available in the [`assets/linux`](assets/linux) directory
-- macOS: an `.icns` icon is available in the [`assets/macos`](assets/macos) directory
+- Linux: a `.desktop` launcher and (.png) icon are available in the [`assets/linux`](https://github.com/CristiFati/pyshallow/tree/main/assets/linux) directory
+- macOS: an `.icns` icon is available in the [`assets/macos`](https://github.com/CristiFati/pyshallow/tree/main/assets/macos) directory
+- Windows: an `.ico` icon is available in the [`assets/windows`](https://github.com/CristiFati/pyshallow/tree/main/assets/windows) directory
 
 ## Usage
 

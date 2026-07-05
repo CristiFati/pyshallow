@@ -74,7 +74,7 @@ def parse_args(argv: Sequence[str] | None) -> tuple[argparse.Namespace, list[str
         "-t",
         help="program execution (run) timeout (stop once it elapses)."
         " Can be provided as a number of seconds (integer) or using the"
-        " `[h:]m:s` format, hours (if given) having no restrictions (can be higher than 24)."
+        " `[h:]m:s` format, hours (if given) having no restrictions (can be higher than 23)."
         " Default: never timeout (0)",
     )
     parser.add_argument(
@@ -90,10 +90,11 @@ def parse_args(argv: Sequence[str] | None) -> tuple[argparse.Namespace, list[str
         "--wait_timeout",
         "-w",
         help="EXPERIMENTAL: wait (idle) timeout between run cycles."
-        " Some features might not work when screen lock is active."
+        " Some features will not work when screen lock is active."
+        " Also, the computer might turn off during wait time."
         " Only applicable when run_timeout is also given and positive."
         " Can be provided as a number of seconds (integer) or using the"
-        " `[h:]m:s` format, hours (if given) having no restrictions (can be higher than 24)."
+        " `[h:]m:s` format, hours (if given) having no restrictions (can be higher than 23)."
         " Default: no wait (0)",
     )
 
@@ -144,6 +145,8 @@ def _run(
     if run_timeout > 0 and wait_timeout == 0 and verbose:
         print(f"\nWill run for {run_timeout} second(s)...")
     start_time = time.time()
+    if not ge.simulate(verbose=verbose):
+        return False
     while True:
         interval = _generate_interval(trigger_interval, max_deviation_percent)
         if run_timeout > 0:
@@ -164,11 +167,12 @@ def _run(
                     timestamp_string(human_readable=False)[2:], interval
                 )
             )
-        ge.simulate(verbose=verbose)
         if read_key(timeout=interval, poll_interval=key_interval) is not None:
             if verbose:
                 print("\nKey pressed. Exiting.")
             return True
+        if not ge.simulate(verbose=verbose):
+            return False
 
 
 def run(args: argparse.Namespace) -> int:
@@ -185,8 +189,7 @@ def run(args: argparse.Namespace) -> int:
         args.verbose,
     )
 
-    if not args.verbose:
-        print("Running PyShallow.\n  At any point, press any key to interrupt...")
+    print("Running PyShallow.\n  At any point, press any key to interrupt...")
 
     if args.run_timeout and args.wait_timeout:
         cycle = 0
@@ -198,6 +201,7 @@ def run(args: argparse.Namespace) -> int:
                 if args.verbose:
                     print(f"\nCycle count ({args.cycle_count}) reached. Exiting.")
                 break
+            ge.cleanup()
             if args.verbose:
                 print(
                     verbose_wait_text_pat.format(

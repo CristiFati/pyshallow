@@ -1,0 +1,19 @@
+
+# Ubuntu 18
+# Images:
+    "ubuntu:18.04"  # pc064, arm32, arm64
+    "i386/ubuntu:18.04"  # pc032
+_IMG="ubuntu:18.04"
+_ARCH=""
+_PLAT_FLAGS="--platform linux/arm/v7"
+dk run --it --name cfati_ubuntu18_${_ARCH} ${_PLAT_FLAGS} --entrypoint bash --net=host --memory=4g --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 --volume "/:/_host_root" "${_IMG}"
+
+# Py 3.14
+
+#_zstd: zstd 1.4.5 libzstd.so.1.3.3
+#_sqlite: sqlite 3.15.2 libsqlite3.so.0.8.6
+# apt install software-properties-common gcc make patch binutils htop pkg-config neovim libpython-dev libffi-dev libssl-dev libbz2-dev libncurses-dev liblzma-dev libreadline-dev libz-dev libgdbm-dev libgdbm-compat-dev libmpdec-dev libx11-dev uuid-dev tk-dev tcl-dev
+# LDFLAGS="-Wl,-s" LINKFORSHARED="-Xlinker -export-dynamic -Wl,-s -Wl,-rpath=\\$\${ORIGIN}/../lib" TCLTK_CFLAGS="-I/usr/include/tcl" TCLTK_LIBS="-ltcl -ltk" ./configure -enable-shared --with-lto 2>&1 | tee ../${_ARCH}_ub18_0314_0cfg.txt
+# make 2>&1 | tee ../${_ARCH}_ub18_0314_1mk.txt
+# make altinstall altbininstall 2>&1 | tee ../${_ARCH}_ub18_0314_2mki.txt
+/usr/local/bin/python3.14 -m venv ~/Work/Dev/VEnvs/py_${_ARCH}_03.14_pyinstaller0

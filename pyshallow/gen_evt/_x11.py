@@ -69,56 +69,69 @@ XCloseDisplay.argtypes = (DisplayPtr,)
 XCloseDisplay.restype = None
 
 _x_quick_check = True
+_exit_on_error = False
 
 
 def _is_x_server_listening() -> bool:
-    fails = (ConnectionRefusedError, socket.timeout)
     hds = os.environ.get("DISPLAY", "").split(":")
-    host = "localhost"
-    port = 6000
-    if hds[0]:
-        host = hds[0]
+    host = hds[0]
+    display = 0
+    timeout = 0.5
     if len(hds) == 2:
         d = hds[1].split(".")
         if d[0].isnumeric():
-            port += int(d[0])
-    try:
-        pcun.connect_to_server(host, port, pcun.SOCKET_FAMILY_IPV4, attempt_timeout=0.5)
-    except Exception as e:
-        if isinstance(getattr(e, "__cause__"), fails):
+            display = int(d[0])
+    if host:
+        try:
+            pcun.connect_to_server(
+                host, 6000 + display, pcun.SOCKET_FAMILY_IPV4, attempt_timeout=timeout
+            )
+        except Exception:
             return False
+        return True
+    sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    sock.settimeout(timeout)
+    try:
+        sock.connect(f"/tmp/.X11-unix/X{display}")
+    except OSError:
+        return False
+    finally:
+        sock.close()
     return True
 
 
-def _open_display(
-    name: str | None = None, quit_on_error: bool = False, verbose: bool = False
-) -> cts.c_void_p | None:
+def _open_display(name: str | None = None) -> cts.c_void_p | None:
     global _x_quick_check
     if _x_quick_check:
         if not _is_x_server_listening():
             if (
                 input(
-                    "A quick test shows that no XServer is listening."
+                    "\nA quick test shows that no XServer is listening."
                     " Press Y/y to continue anyway (in a possibly unresponsive manner): "
                 ).lower()
                 != "y"
             ):
                 print("Aborted by user.")
-                sys.exit(-1)
+                return None
         _x_quick_check = False
     disp_ptr = XOpenDisplay(name)
     if not disp_ptr:
-        if verbose:
-            print("Error contacting XServer.")
-        if quit_on_error:
-            sys.exit(-1)
+        print("Error contacting XServer.")
+        disp_ptr = cts.c_void_p(0)
     return disp_ptr
 
 
-def simulate(verbose: bool = False) -> None:
-    display_ptr = _open_display(verbose=verbose)
-    if not display_ptr:
-        return
+def cleanup() -> None:
+    pass
+
+
+def simulate(verbose: bool = False) -> bool:
+    global _exit_on_error
+    display_ptr = _open_display()
+    if display_ptr is None:
+        return False
+    elif not display_ptr:
+        return not _exit_on_error
     root_window = XDefaultRootWindow(display_ptr)
     root_wnd, child_wnd = Window(), Window()
     root_x, root_y = cts.c_int(0), cts.c_int(0)
@@ -145,12 +158,13 @@ def simulate(verbose: bool = False) -> None:
     res = XWarpPointer(display_ptr, 0, 0, 0, 0, 0, 0, 0, 0)
     if verbose:
         if res:
-            print("Sent fake mouse move event.")
+            print("Generated synthetic event.")
         else:
-            print("Error setting cursor position.")
+            print("Error generating synthetic event.")
 
     XFlush(display_ptr)
     XCloseDisplay(display_ptr)
+    return True
 
 
 if __name__ == "__main__":
