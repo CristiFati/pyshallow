@@ -1,0 +1,98 @@
+name: Build PyShallow
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: "Target platform"
+        required: true
+        type: choice
+        options:
+          - all
+          - linux-x86_64
+          - linux-arm64
+          - macos-universal2
+          - windows-x64
+          - windows-x86
+          - windows-arm64
+      version:
+        description: "Version (YYYY.MM.DD format, e.g. 2026.07.09). Leave empty to use version.py as-is."
+        required: false
+        default: ""
+        type: string
+      ref:
+        description: "Git ref to build from (tag, branch, SHA). Leave empty for the triggering branch."
+        required: false
+        default: ""
+        type: string
+      python-version:
+        description: "Python version"
+        required: false
+        default: "3.14.6"
+        type: string
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - id: set-matrix
+        run: |
+          all='[
+            {"platform":"linux-x86_64","runner":"ubuntu-latest"},
+            {"platform":"linux-arm64","runner":"ubuntu-24.04-arm"},
+            {"platform":"macos-universal2","runner":"macos-latest"},
+            {"platform":"windows-x64","runner":"windows-latest"},
+            {"platform":"windows-x86","runner":"windows-latest","arch":"x86"},
+            {"platform":"windows-arm64","runner":"windows-11-arm"}
+          ]'
+          if [ "${{ inputs.platform }}" = "all" ]; then
+            matrix="$all"
+          else
+            matrix=$(echo "$all" | jq -c --arg p "${{ inputs.platform }}" '[.[] | select(.platform == $p)]')
+          fi
+          echo "matrix={\"include\":$(echo "$matrix" | jq -c)}" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: setup
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.setup.outputs.matrix) }}
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+
+      - name: Set up Python ${{ inputs.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python-version }}
+          architecture: ${{ matrix.arch }}
+
+      - name: Set version
+        if: inputs.version != ''
+        shell: python
+        run: |
+          parts = "${{ inputs.version }}".split(".")
+          with open("pyshallow/version.py", "w") as f:
+              f.write(f"__version_info__ = ({parts[0]}, {parts[1]}, {parts[2]})\n")
+              f.write('__version__ = ".".join(str(e) for e in __version_info__)\n')
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pyinstaller pycfutils
+
+      - name: Build with PyInstaller
+        run: pyinstaller pyshallow.spec
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pyshallow-${{ matrix.platform }}
+          path: dist/PyShallow-*
+          if-no-files-found: error
